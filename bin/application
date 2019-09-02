@@ -1,0 +1,31 @@
+#!/usr/bin/php
+<?php
+/**
+ * Author: Rumen Tabakov
+ *         rumen.tabakov@gmail.com
+ */
+
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+if (PHP_SAPI !== 'cli') {
+    header('HTTP1.1 400 Bad Request');
+    die('Rin from CLI only!');
+}
+
+if (empty($argv[1])) {
+    die('Error: Please supply a command name!' . PHP_EOL);
+}
+
+$className = $argv[1];
+
+try {
+    $class = new \ReflectionClass('\App\Api\Command\\' . ucfirst($className) . 'Command');
+} catch (\ReflectionException $ex) {
+    try {
+        $class = new \ReflectionClass('\App\Core\Command\\' . ucfirst($className) . 'Command');
+    } catch (\ReflectionException $ex) {
+        die('Error: requested command is missing');
+    }
+}
+
+$class->newInstanceArgs([\array_slice($argv, 2)]);

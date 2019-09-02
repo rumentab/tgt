@@ -1,0 +1,5 @@
+/.idea/
+/logs/
+/vendor/
+composer.lock
+user.sqlite3
