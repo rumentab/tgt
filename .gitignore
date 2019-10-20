@@ -3,3 +3,4 @@
 /vendor/
 composer.lock
 user.sqlite3
+.directory
