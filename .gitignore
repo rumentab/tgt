@@ -4,3 +4,4 @@
 composer.lock
 user.sqlite3
 .directory
+/nbproject/
