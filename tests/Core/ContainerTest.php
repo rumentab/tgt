@@ -6,31 +6,32 @@
 
 namespace Core;
 
-
 use App\Core\Container;
 use App\Core\Exception\Container\ContainerDependencyMissingException;
+use DateTime;
+use DateTimeZone;
+use Exception;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+use ReflectionException;
 
 class DummyClass
 {
-    /**
-     * @var \DateTime
-     */
-    private $date;
+    private DateTime $date;
 
     /**
      * DummyClass constructor.
-     * @param \DateTime $date
+     * @param DateTime $date
      */
-    public function __construct(\DateTime $date)
+    public function __construct(DateTime $date)
     {
         $this->date = $date;
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getDate(): \DateTime
+    public function getDate(): DateTime
     {
         return $this->date;
     }
@@ -40,11 +41,11 @@ class ContainerTest extends TestCase
 {
     /**
      * @return Container
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    public function testInstance()
+    public function testInstance(): Container
     {
-        $container = new \ReflectionClass(Container::class);
+        $container = new ReflectionClass(Container::class);
         /** @var Container $containerInstance */
         $containerInstance = $container->newInstanceWithoutConstructor();
 
@@ -60,12 +61,13 @@ class ContainerTest extends TestCase
      * @depends testInstance
      *
      * @param Container $container
-     * @throws \ReflectionException
-     * @throws \App\Core\Exception\Container\ContainerDependencyMissingException
+     * @throws ReflectionException
+     * @throws ContainerDependencyMissingException
+     * @throws Exception
      */
     public function testDependencyInjection(Container $container)
     {
-        $dependency = new \DateTime('2000-01-01 00:00:00', new \DateTimeZone('UTC'));
+        $dependency = new DateTime('2000-01-01 00:00:00', new DateTimeZone('UTC'));
 
         $container->registerSingleton($dependency);
 
@@ -73,7 +75,7 @@ class ContainerTest extends TestCase
 
         $test = $container->getInstance(DummyClass::class);
 
-        $this->assertInstanceOf(\DateTime::class, $test->getDate());
+        $this->assertInstanceOf(DateTime::class, $test->getDate());
         $this->assertEquals('01/01/2000 00:00:00', $test->getDate()->format('m/d/Y H:i:s'));
 
         $this->expectException(ContainerDependencyMissingException::class);

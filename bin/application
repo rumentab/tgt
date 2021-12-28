@@ -19,13 +19,13 @@ if (empty($argv[1])) {
 $className = $argv[1];
 
 try {
-    $class = new \ReflectionClass('\App\Api\Command\\' . ucfirst($className) . 'Command');
-} catch (\ReflectionException $ex) {
+    $class = new ReflectionClass('\App\Api\Command\\' . ucfirst($className) . 'Command');
+} catch (ReflectionException $ex) {
     try {
-        $class = new \ReflectionClass('\App\Core\Command\\' . ucfirst($className) . 'Command');
-    } catch (\ReflectionException $ex) {
+        $class = new ReflectionClass('\App\Core\Command\\' . ucfirst($className) . 'Command');
+    } catch (ReflectionException $ex) {
         die('Error: requested command is missing');
     }
 }
 
-$class->newInstanceArgs([\array_slice($argv, 2)]);
+$class->newInstanceArgs([array_slice($argv, 2)]);

@@ -4,18 +4,21 @@
  *         rumen.tabakov@gmail.com
  */
 
+declare(strict_types=1);
+
 namespace App\Core\Request;
 
 use App\Core\Exception\Request\ParameterNotFoundException;
 use App\Core\Services\Validator\InputValidator;
+use ArrayObject;
 
 class RequestParser implements ParametersInterface
 {
     use InputValidator;
     /**
-     * @var \ArrayObject
+     * @var ArrayObject
      */
-    private $request;
+    private ArrayObject $request;
 
     /**
      * RequestParser constructor.
@@ -23,7 +26,7 @@ class RequestParser implements ParametersInterface
     public function __construct()
     {
         $post = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-        $this->request = new \ArrayObject($this->validate($post) ?? []);
+        $this->request = new ArrayObject($this->validate($post) ?? []);
     }
 
     /**
@@ -40,7 +43,7 @@ class RequestParser implements ParametersInterface
      * @return mixed
      * @throws ParameterNotFoundException
      */
-    public function get(string $key)
+    public function get(string $key): mixed
     {
         if ($this->has($key)) {
             return $this->request->offsetGet($key);

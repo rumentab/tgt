@@ -6,8 +6,9 @@
 
 namespace App\Core\Configurator;
 
-
 use App\Core\Configurator;
+use ArrayObject;
+use function is_array;
 
 class PhpConfigurator extends Configurator
 {
@@ -21,8 +22,8 @@ class PhpConfigurator extends Configurator
             if ($file->isFile() && $file->isReadable()) {
                 $key = preg_replace('/(\.\w+)?$/', '', $file->getFilename());
                 $value = include $file->getPathname();
-                if (\is_array($value) && !empty($value)) {
-                    $this->configurations->offsetSet($key, new \ArrayObject($value));
+                if (is_array($value) && !empty($value)) {
+                    $this->configurations->offsetSet($key, new ArrayObject($value));
                 }
             }
             $this->config_files->next();
@@ -38,8 +39,7 @@ class PhpConfigurator extends Configurator
     {
         return is_null($key) ?
             $this->configurations->offsetExists($area) :
-            $this->configurations->offsetExists($area) &&
-            \array_key_exists($key, $this->configurations->offsetGet($area));
+            $this->configurations->offsetExists($area) && $this->configurations->offsetGet($area)->offsetExists($key);
     }
 
     /**
@@ -47,7 +47,7 @@ class PhpConfigurator extends Configurator
      * @param null|string $key
      * @return mixed
      */
-    public function get(string $area, ?string $key = null)
+    public function get(string $area, ?string $key = null): mixed
     {
         return is_null($key) ?
             $this->configurations->offsetGet($area) :

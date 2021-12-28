@@ -4,19 +4,22 @@
  *         rumen.tabakov@gmail.com
  */
 
+declare(strict_types=1);
+
 namespace App\Core\Request;
 
 use App\Core\Exception\Request\ParameterNotFoundException;
+use ArrayObject;
 
 final class ServerVariablesReader
 {
     /**
      * Read the $_SERVER global variable
-     * @return \ArrayObject
+     * @return ArrayObject
      */
-    public static function getVars(): \ArrayObject
+    public static function getVars(): ArrayObject
     {
-        return new \ArrayObject(filter_input_array(INPUT_SERVER));
+        return new ArrayObject(filter_input_array(INPUT_SERVER));
     }
 
     /**
@@ -26,12 +29,11 @@ final class ServerVariablesReader
      */
     public static function getVar(string $key): string
     {
-        $vars = self::getVars();
-        $var = $vars->offsetGet($key);
+        $var = self::getVars()->offsetGet($key);
         if (false !== $var) {
             return $var;
-        } else {
-            throw new ParameterNotFoundException($key);
         }
+
+        throw new ParameterNotFoundException($key);
     }
 }

@@ -9,20 +9,17 @@ namespace App\Core;
 
 use App\Core\Configurator\ConfiguratorInterface;
 use App\Core\Exception\Configurator\ConfigurationFolderMissingException;
+use ArrayObject;
+use DirectoryIterator;
+use UnexpectedValueException;
 
 abstract class Configurator implements ConfiguratorInterface
 {
     const CONFIGURATIONS_FOLDER = 'config';
 
-    /**
-     * @var \DirectoryIterator
-     */
-    protected $config_files;
+    protected DirectoryIterator $config_files;
 
-    /**
-     * @var \ArrayObject
-     */
-    protected $configurations;
+    protected ArrayObject $configurations;
 
     /**
      * Configurator constructor.
@@ -32,20 +29,20 @@ abstract class Configurator implements ConfiguratorInterface
     {
         $this->config_files = $this->scanConfigFolder();
 
-        $this->configurations = new \ArrayObject();
+        $this->configurations = new ArrayObject();
 
         $this->loadConfigurations();
     }
 
     /**
-     * @return \DirectoryIterator
+     * @return DirectoryIterator
      * @throws ConfigurationFolderMissingException
      */
-    private function scanConfigFolder()
+    private function scanConfigFolder(): DirectoryIterator
     {
         try {
-            return new \DirectoryIterator(dirname(__DIR__) . DIRECTORY_SEPARATOR . static::CONFIGURATIONS_FOLDER);
-        } catch (\UnexpectedValueException $ex) {
+            return new DirectoryIterator(dirname(__DIR__) . DIRECTORY_SEPARATOR . static::CONFIGURATIONS_FOLDER);
+        } catch (UnexpectedValueException $ex) {
             throw new ConfigurationFolderMissingException();
         }
     }

@@ -4,39 +4,43 @@
  *         rumen.tabakov@gmail.com
  */
 
+declare(strict_types=1);
+
 namespace App\Core;
 
 use App\Core\Exception\Request\ParameterNotFoundException;
 use App\Core\Request\QueryParser;
 use App\Core\Request\RequestParser;
 use App\Core\Request\ServerVariablesReader;
+use ArrayObject;
+use function urldecode;
 
 final class Request
 {
     /**
-     * @var \ArrayObject
+     * @var ArrayObject
      */
-    private $server_variables;
+    private ArrayObject $serverVariables;
 
     /**
      * @var string
      */
-    private $requested_path;
+    private string $requestedPath;
 
     /**
      * @var QueryParser
      */
-    private $query;
+    private QueryParser $query;
 
     /**
      * @var RequestParser
      */
-    private $request;
+    private RequestParser $request;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $request_method;
+    private ?string $requestMethod;
 
     /**
      * Request constructor.
@@ -44,29 +48,29 @@ final class Request
      */
     public function __construct()
     {
-        $this->server_variables = ServerVariablesReader::getVars();
-        $this->request_method = $this->server_variables->offsetExists('REQUEST_METHOD') ?
-            $this->server_variables->offsetGet('REQUEST_METHOD') : null;
+        $this->serverVariables = ServerVariablesReader::getVars();
+        $this->requestMethod = $this->serverVariables->offsetExists('REQUEST_METHOD') ?
+            $this->serverVariables->offsetGet('REQUEST_METHOD') : null;
         $this->query = new QueryParser();
         $this->request = new RequestParser();
-        $this->requested_path = $this->query->has('path') ? \urldecode($this->query->get('path')) : '/';
+        $this->requestedPath = $this->query->has('path') ? urldecode($this->query->get('path')) : '/';
     }
 
     /**
-     * @param \ArrayObject $params
+     * @param ArrayObject $params
      */
-    public function __invoke(\ArrayObject $params)
+    public function __invoke(ArrayObject $params)
     {
         $qp = &$this->query;
         $qp($params);
     }
 
     /**
-     * @return \ArrayObject
+     * @return ArrayObject
      */
-    public function getServerVariables(): \ArrayObject
+    public function getServerVariables(): ArrayObject
     {
-        return $this->server_variables;
+        return $this->serverVariables;
     }
 
     /**
@@ -74,7 +78,7 @@ final class Request
      */
     public function getRequestedPath(): string
     {
-        return $this->requested_path;
+        return $this->requestedPath;
     }
 
     /**
@@ -98,6 +102,6 @@ final class Request
      */
     public function getRequestMethod(): string
     {
-        return $this->request_method;
+        return $this->requestMethod;
     }
 }

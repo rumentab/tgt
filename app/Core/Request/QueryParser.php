@@ -4,31 +4,33 @@
  *         rumen.tabakov@gmail.com
  */
 
-namespace App\Core\Request;
+declare(strict_types=1);
 
+namespace App\Core\Request;
 
 use App\Core\Exception\Request\ParameterNotFoundException;
 use App\Core\Services\Validator\InputValidator;
+use ArrayObject;
+use function filter_input_array;
 
 class QueryParser implements ParametersInterface
 {
     use InputValidator;
     /**
-     * @var \ArrayObject
+     * @var ArrayObject
      */
-    private $query;
+    private ArrayObject $query;
 
     /**
      * QueryParser constructor.
-     * @throws ParameterNotFoundException
      */
     public function __construct()
     {
-        $query = \filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
-        $this->query = new \ArrayObject($this->validate($query ?? []));
+        $query = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
+        $this->query = new ArrayObject($this->validate($query ?? []));
     }
 
-    public function __invoke(\ArrayObject $params)
+    public function __invoke(ArrayObject $params)
     {
         $iterator = $params->getIterator();
         while ($iterator->valid()) {
@@ -54,7 +56,7 @@ class QueryParser implements ParametersInterface
      * @return mixed
      * @throws ParameterNotFoundException
      */
-    public function get(string $key)
+    public function get(string $key): mixed
     {
         if ($this->has($key)) {
             return $this->query->offsetGet($key);

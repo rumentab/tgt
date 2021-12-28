@@ -11,12 +11,12 @@ namespace App\Core\Exception\Container;
 use Exception;
 use Throwable;
 
-class ContainerMappingMissingException extends Exception
+class ContainerMappingUnsupportedTypeException extends Exception
 {
-    private const MESSAGE = "Mapping configuration missing.";
+    private const MESSAGE = "Unsupported type for mapping.";
 
     /**
-     * ContainerMappingMissingException constructor.
+     * ContainerMappingUnsupportedTypeException constructor.
      * @param string $message
      * @param int $code
      * @param Throwable|null $previous
