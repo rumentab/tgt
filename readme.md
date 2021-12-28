@@ -76,7 +76,7 @@ it means you don't have a data source configured. Open a terminal console and go
 
 ``bash#> php bin/application install``
 
-This command will create an empty data source. If you want some dunny data preinstalled, run the command with ``--with-fixtures`` parameter:
+This command will create an empty data source. If you want some dummy data preinstalled, run the command with ``--with-fixtures`` parameter:
 
 ``bash#> php bin/application install --with-fixtures``
 
